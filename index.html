@@ -11,7 +11,7 @@
 
 	<header class="block hero">
 		<span class="tick"></span>
-		<p class="label">The Pandacaqui solar oracle <span class="dim">/ Read Nov 6, 2026 / 8 hybrid offerings</span></p>
+		<p class="label">The Pandacaqui solar oracle <span class="dim">/ Read Nov 6, 2026 / 9 hybrid offerings</span></p>
 		<h1 id="title" aria-live="polite"></h1>
 		<p class="lede" id="lede"></p>
 	</header>
@@ -453,9 +453,10 @@
 
 		const vendors = [
 			{ name: 'VRAY', where: 'Porac, Pampanga', price: 160000, kwp: 3.15, inv: 3, invName: 'SRNE 3 kW hybrid', batt: 4.8, battName: '24 V × 200 Ah', warranty: '1 yr workmanship', war: 2, pay: 'Not published', payS: 2, cert: 1, certNote: 'Facebook ad from Oct 22, not a quote for you', incl: 'y?yy???', omen: 'The only package inside your budget, but it is an ad, not a quote.' },
-			{ name: 'EAZY Solar', where: 'Messenger', price: 199000, kwp: 3.6, inv: 6, invName: 'Solax 6 kW hybrid', batt: 5.12, battName: '51.2 V × 100 Ah', warranty: '10 yr', war: 5, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Photo quote sent Nov 6', incl: '??yyy??', omen: 'The most hardware for the money. A 6 kW inverter carries aircon, kettle and air fryer at once.' },
+			{ name: 'EAZY Solar', where: 'Messenger', price: 204000, priceNote: '₱199K + ₱5K travel fee', kwp: 3.6, inv: 6, invName: 'Solax 6 kW hybrid', batt: 5.12, battName: '51.2 V × 100 Ah', warranty: '10 yr', war: 5, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Photo quote sent Nov 6', incl: '??yyy??', omen: 'The most hardware for the money. A 6 kW inverter carries aircon, kettle and air fryer at once.' },
 			{ name: 'MPD', where: 'Messenger', price: 230000, kwp: 3, inv: 3, invName: '3 kW hybrid', batt: null, battName: '100 Ah, voltage not given', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Quoted Nov 6, 8:16 AM', incl: '???????', omen: 'Battery size is a mystery. Their ₱145K grid-tied is the cheaper path.' },
-			{ name: 'Northlight', where: 'Messenger', price: 239999, kwp: 3.78, inv: null, invName: 'Inverter not given', batt: 5.1, battName: '5.1 kWh', warranty: 'Not given', war: 2, pay: 'Cash only', payS: 1, cert: 5, certNote: 'Said ₱240K is their floor, Nov 6', incl: '???????', omen: 'Refused your ₱170K counter and wants cash.' },
+			{ name: 'Northlight', where: 'Messenger', price: 207000, kwp: null, inv: 6, invName: '6 kW inverter', batt: 5.1, battName: '5.1 kWh', warranty: 'Not given', war: 2, pay: 'Cash only so far', payS: 1, cert: 5, certNote: 'Final offer, Nov 6', incl: '???????', omen: 'Dropped from ₱240K to ₱207K with four panels, and calls it final.' },
+			{ name: 'Wextrend', where: 'Magalang, Pampanga', price: 200000, kwp: 3.6, inv: null, invName: 'Hybrid inverter, kW not given', batt: 4.8, battName: 'Wolong 48 V × 100 Ah', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Quoted Nov 6', incl: '???????', omen: 'Wants the heavy loads on a separate circuit so the battery skips them in brownouts.' },
 			{ name: 'IAN Smart Energy', where: 'Pampanga branch', price: 257600, priceNote: '₱230K + 12% VAT', kwp: 3, inv: null, invName: 'Inverter not given', batt: 4.8, battName: 'Pylontech 100 Ah', warranty: '12 yr panels, 10 yr inverter and battery', war: 5, pay: '₱9,839 × 36 months', payS: 5, cert: 3, certNote: 'Sep 1 quote, VAT excluded', incl: '?n????n', omen: 'The only real installment plan, but it totals ₱354K and the branch skips net metering.', link: null },
 			{ name: 'AVASS', where: 'Messenger', price: 289000, kwp: 6.2, inv: null, invName: 'Inverter not given', batt: 16, battName: '16 kWh', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 2, certNote: 'Quoted by their AI sales agent', incl: 'yy?????', omen: null, link: null },
 			{ name: 'Luminar', where: 'Messenger', price: 306400, kwp: 3, inv: 3, invName: '3 kW Lite', batt: null, battName: 'Battery not given', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 3, certNote: 'September quote', incl: '?y????y', omen: 'The tidiest paperwork, with VAT and a ₱60K net-metering allowance inside.', link: null },
@@ -463,7 +464,7 @@
 		]
 		// AVASS omen is computed against EAZY so the numbers stay true to the data.
 		{
-			const a = vendors[5], e = vendors[1]
+			const a = vendors.find((v) => v.name === 'AVASS'), e = vendors.find((v) => v.name === 'EAZY Solar')
 			a.omen = `${(a.batt / e.batt).toFixed(1)}× EAZY's battery for ${k(a.price - e.price)} more. Awaiting confirmation.`
 		}
 		const inclCols = [['Install', 'Inst'], ['VAT', 'VAT'], ['Mount', 'Mnt'], ['Protect', 'Prot'], ['Monitor', 'Mon'], ['Dec slot', 'Dec'], ['Net meter', 'Net']]
@@ -532,14 +533,14 @@
 			}, 22)
 		}
 
-		const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+		const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX']
 		const arcana = [['The Sun', 'what the stars favor'], ['The Star', 'the close second'], ['The Moon', 'the hidden option']]
 
 		// Orrery geometry
 		const svg = document.getElementById('orrery')
 		const SX = 30, SY = 165, P0 = 140000, P1 = 400000, R0 = 46, R1 = 600
 		const rOf = (p) => R0 + ((p - P0) / (P1 - P0)) * (R1 - R0)
-		const ySlots = [-92, 62, -40, 112, 10, -112, 70, -28]
+		const ySlots = [-92, 62, -40, 112, -128, 10, -112, 70, -28]
 		const NS = 'http://www.w3.org/2000/svg'
 		const el = (tag, attrs, parent = svg) => {
 			const n = document.createElementNS(NS, tag)
@@ -663,7 +664,7 @@
 					<h2>${v.name}</h2>
 					<div class="price">${peso(v.price)}<small>${v.priceNote || (v.price <= state.budget ? 'in budget' : k(v.price - state.budget) + ' over')}</small></div>
 					<ul class="specs">
-						<li><b>${v.kwp} kWp</b> panels, <b>${v.invName}</b></li>
+						<li>${v.kwp ? `<b>${v.kwp} kWp</b> panels` : '<b>4</b> panels'}, <b>${v.invName}</b></li>
 						<li><b>${v.batt ? v.batt + ' kWh' : '?'}</b> battery${h ? `, about <b>${Math.round(h)} h</b> of aircon after sunset` : ''}</li>
 						<li>${v.pay}. ${v.warranty} warranty.</li>
 					</ul>
@@ -687,7 +688,7 @@
 					</button>
 					${open ? `<div class="detail"><dl>
 						<dt>Where</dt><dd>${v.where}</dd>
-						<dt>Panels</dt><dd>${v.kwp} kWp, ${k(v.price / v.kwp)} per kWp</dd>
+						<dt>Panels</dt><dd>${v.kwp ? `${v.kwp} kWp, ${k(v.price / v.kwp)} per kWp` : 'Count only, wattage not given'}</dd>
 						<dt>Battery</dt><dd>${v.battName}${v.batt ? `, ${k(v.price / v.batt)} per kWh` : ''}</dd>
 						<dt>Inverter</dt><dd>${v.invName}</dd>
 						<dt>Payment</dt><dd>${v.pay}</dd>
