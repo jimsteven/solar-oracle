@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pandacaqui solar oracle</title>
+<meta name="description" content="Hybrid solar offers for a home in Pandacaqui, Mexico, Pampanga, ranked by price, battery and inclusions.">
+<style>body{max-width:960px;margin:0 auto!important}</style>
+</head><body>
+<div id="oracle">
+	<div class="rails" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+	<div class="ember" aria-hidden="true"></div>
+	<div class="grain" aria-hidden="true"></div>
+
+	<header class="block hero">
+		<span class="tick"></span>
+		<p class="label">The Pandacaqui solar oracle <span class="dim">/ Read Nov 6, 2026 / 8 hybrid offerings</span></p>
+		<h1 id="title" aria-live="polite"></h1>
+		<p class="lede" id="lede"></p>
+	</header>
+
+	<section class="block orrery-wrap">
+		<span class="tick"></span>
+		<p class="label">The orrery <span class="dim">/ distance from the sun is price, planet size is battery</span></p>
+		<svg id="orrery" viewBox="0 0 640 330" role="img" aria-label="Offers plotted by price and battery size"></svg>
+		<div class="budget">
+			<label for="budget" class="label">Your offering <span class="dim">/ max all-in budget</span></label>
+			<div class="budget-row">
+				<input id="budget" type="range" min="150000" max="400000" step="5000" value="170000" />
+				<span id="budgetOut" class="num big"></span>
+			</div>
+		</div>
+	</section>
+
+	<section class="block">
+		<span class="tick"></span>
+		<p class="label">The spread <span class="dim">/ top three at your weights</span></p>
+		<div class="cards" id="cards"></div>
+	</section>
+
+	<section class="block">
+		<span class="tick"></span>
+		<p class="label">The ledger <span class="dim">/ weighted score out of 100, tap a row</span></p>
+		<div class="ledger-grid">
+			<div class="weights" id="weights"></div>
+			<div>
+				<ol class="ledger" id="ledger"></ol>
+				<p class="flip" id="flip"></p>
+				<button class="btn" id="reset" disabled>Reset weights</button>
+			</div>
+		</div>
+	</section>
+
+	<section class="block">
+		<span class="tick"></span>
+		<p class="label">What is inside the box <span class="dim">/ confirmed by the seller in writing</span></p>
+		<div class="incl" id="incl"></div>
+		<p class="key"><span class="g y">✓</span> confirmed <span class="g n">×</span> excluded <span class="g q">?</span> unknown, ask</p>
+	</section>
+
+	<section class="block rites">
+		<span class="tick"></span>
+		<p class="label">Notes</p>
+		<p class="foot">
+			Grid-tied options without a battery are not ranked. Prices are as quoted or advertised and may change.
+			Aircon hours assume 90% usable battery and a 0.82 kW night load (1.5 HP inverter aircon plus three fridges).
+			IAN's quote is VAT-excluded, so 12% is added. Inclusions marked ? have not been confirmed in writing yet.
+		</p>
+	</section>
+</div>
+
+<style>
+	:root {
+		--o-bg: #091c1e;
+		--o-fg: #f6fff5;
+		--o-muted: #a59c8f;
+		--o-line: rgb(246 255 245 / 0.14);
+		--o-accent: #f6833b;
+		--o-ember: #ff8a3c;
+		--o-display: 'Sagittaire Display', 'Iowan Old Style', 'Palatino', 'Book Antiqua', Georgia, serif;
+		--o-mono: 'Berkeley Mono', 'TX-02', ui-monospace, 'SF Mono', Menlo, monospace;
+		--o-ease: cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	html,
+	body {
+		background: var(--o-bg);
+		margin: 0;
+	}
+	#oracle {
+		position: relative;
+		overflow: hidden;
+		color: var(--o-fg);
+		background: var(--o-bg);
+		font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+		padding: 40px 4.098% 48px;
+		isolation: isolate;
+	}
+	.rails {
+		position: absolute;
+		inset: 0 4.098%;
+		pointer-events: none;
+		z-index: -1;
+	}
+	.rails i {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 1px;
+		background: linear-gradient(to bottom, rgb(246 255 245 / 0.34) 1px, transparent 1px) 0 0 / 1px 9px;
+	}
+	.rails i:nth-child(1) { left: 0; }
+	.rails i:nth-child(2) { left: 25.01%; }
+	.rails i:nth-child(3) { left: 50.02%; }
+	.rails i:nth-child(4) { left: 66.68%; }
+	.rails i:nth-child(5) { left: 83.34%; }
+	.rails i:nth-child(6) { right: 0; }
+	.ember {
+		position: absolute;
+		inset: 0 0 auto;
+		height: 520px;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(60% 70% at 18% 0%, rgb(255 138 60 / 0.22), transparent 70%),
+			radial-gradient(40% 50% at 85% 10%, rgb(255 138 60 / 0.08), transparent 70%);
+	}
+	.grain {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		opacity: 0.07;
+		mix-blend-mode: screen;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	}
+
+	.block {
+		position: relative;
+		padding-left: 24px;
+		margin-bottom: 56px;
+	}
+	.tick {
+		position: absolute;
+		left: -0.5px;
+		top: 2px;
+		width: 2px;
+		height: 18px;
+		background: var(--o-accent);
+		transform-origin: top;
+		animation: grow 0.8s var(--o-ease) both;
+	}
+	@keyframes grow {
+		from { transform: scaleY(0); }
+	}
+	.label {
+		font: 11px/16px var(--o-mono);
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--o-fg);
+		margin: 0 0 16px;
+	}
+	.dim { color: var(--o-muted); }
+	.num { font-variant-numeric: tabular-nums; font-family: var(--o-mono); }
+
+	h1 {
+		font: 300 clamp(30px, 6.4vw, 56px) / 1.04 var(--o-display);
+		letter-spacing: -0.015em;
+		margin: 0 0 18px;
+		max-width: 15em;
+		text-wrap: balance;
+	}
+	h1 em {
+		font-style: italic;
+		color: var(--o-accent);
+	}
+	.lede {
+		color: var(--o-muted);
+		max-width: 38em;
+		margin: 0;
+		text-wrap: pretty;
+	}
+	.lede b { color: var(--o-fg); font-weight: 500; }
+
+	/* Orrery */
+	#orrery {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	#orrery text {
+		font-family: var(--o-mono);
+		fill: var(--o-fg);
+	}
+	.orbit {
+		fill: none;
+		stroke: rgb(246 255 245 / 0.22);
+		stroke-width: 1;
+		stroke-dasharray: 1 7;
+		stroke-linecap: round;
+	}
+	.budget-ring {
+		fill: rgb(246 131 59 / 0.06);
+		stroke: var(--o-accent);
+		stroke-dasharray: 2 6;
+		stroke-linecap: round;
+		transition: r 0.6s var(--o-ease);
+	}
+	.planet { cursor: pointer; }
+	.planet circle.body { transition: fill 0.2s, stroke 0.2s; }
+	.planet:focus { outline: none; }
+	.planet:focus-visible circle.body { stroke: var(--o-fg); stroke-width: 2; }
+	.budget { margin-top: 8px; max-width: 420px; }
+	.budget-row { display: flex; align-items: center; gap: 16px; }
+	.big { font-size: 20px; }
+
+	input[type='range'] {
+		-webkit-appearance: none;
+		appearance: none;
+		flex: 1;
+		min-width: 0;
+		height: 18px;
+		background: transparent;
+		cursor: pointer;
+		--p: 50%;
+	}
+	input[type='range']::-webkit-slider-runnable-track {
+		height: 1px;
+		background: linear-gradient(to right, var(--o-accent) var(--p), rgb(246 255 245 / 0.25) var(--p));
+	}
+	input[type='range']::-moz-range-track { height: 1px; background: rgb(246 255 245 / 0.25); }
+	input[type='range']::-moz-range-progress { height: 1px; background: var(--o-accent); }
+	input[type='range']::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 12px;
+		height: 12px;
+		margin-top: -5.5px;
+		border-radius: 50%;
+		background: var(--o-bg);
+		border: 1px solid var(--o-accent);
+		box-shadow: 0 0 0 3px rgb(246 131 59 / 0.18);
+	}
+	input[type='range']::-moz-range-thumb {
+		width: 12px; height: 12px; border-radius: 50%;
+		background: var(--o-bg); border: 1px solid var(--o-accent);
+	}
+	input[type='range']:focus-visible { outline: 2px solid var(--o-accent); outline-offset: 2px; }
+
+	/* Tarot */
+	.cards {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+	}
+	.card {
+		position: relative;
+		min-width: 0;
+		padding: 18px 16px 16px;
+		border: 1px solid var(--o-line);
+		border-radius: 10px 10px 2px 2px;
+		background: linear-gradient(to bottom, rgb(246 255 245 / 0.035), transparent 60%);
+		display: grid;
+		gap: 10px;
+		align-content: start;
+		animation: rise 0.32s ease-out both;
+	}
+	.card::before {
+		content: '';
+		position: absolute;
+		inset: 5px;
+		border: 1px dashed rgb(246 255 245 / 0.10);
+		border-radius: 7px 7px 1px 1px;
+		pointer-events: none;
+	}
+	.card.first { border-color: rgb(246 131 59 / 0.55); }
+	.card.first::after {
+		content: '';
+		position: absolute;
+		inset: -1px;
+		border-radius: inherit;
+		box-shadow: 0 0 40px -12px rgb(255 138 60 / 0.55);
+		pointer-events: none;
+	}
+	@keyframes rise {
+		from { opacity: 0; transform: translateY(12px); }
+	}
+	.arcana {
+		display: flex;
+		justify-content: space-between;
+		font: 11px/16px var(--o-mono);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--o-muted);
+	}
+	.card .sigil { width: 100%; height: 64px; }
+	.card h2 {
+		font: 300 26px/1.1 var(--o-display);
+		margin: 0;
+	}
+	.card h2 i { color: var(--o-accent); }
+	.card .price { font: 18px var(--o-mono); font-variant-numeric: tabular-nums; }
+	.card .price small { font-size: 11px; color: var(--o-muted); margin-left: 6px; }
+	.specs {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: 12px;
+		color: var(--o-muted);
+		display: grid;
+		gap: 2px;
+	}
+	.specs b { color: var(--o-fg); font-weight: 400; }
+	.omen {
+		margin: 0;
+		padding-top: 10px;
+		border-top: 1px dotted rgb(246 255 245 / 0.25);
+		font: italic 300 15px/1.35 var(--o-display);
+		text-wrap: pretty;
+	}
+
+	/* Ledger */
+	.ledger-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+		gap: 32px;
+	}
+	.weights { display: grid; gap: 14px; align-content: start; }
+	.w label { display: flex; justify-content: space-between; font-size: 13px; }
+	.w label .num { color: var(--o-accent); font-size: 12px; }
+	.w p { margin: 0; font-size: 11px; color: var(--o-muted); }
+	.w input { width: 100%; }
+	.ledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--o-line); }
+	.row { border-bottom: 1px solid var(--o-line); }
+	.row > button {
+		all: unset;
+		box-sizing: border-box;
+		width: 100%;
+		display: grid;
+		grid-template-columns: 34px minmax(0, 1fr) auto;
+		gap: 4px 10px;
+		padding: 10px 4px;
+		cursor: pointer;
+	}
+	.row > button:focus-visible { outline: 2px solid var(--o-accent); outline-offset: -2px; }
+	@media (hover: hover) {
+		.row > button:hover { background: rgb(246 255 245 / 0.04); }
+	}
+	.roman { font: italic 300 18px/20px var(--o-display); color: var(--o-muted); }
+	.row.lead .roman { color: var(--o-accent); }
+	.who { font-size: 14px; display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+	.who .pr { font: 12px var(--o-mono); color: var(--o-muted); }
+	.row .score { font: 15px/20px var(--o-mono); text-align: right; font-variant-numeric: tabular-nums; }
+	.bar { grid-column: 2 / 4; height: 3px; background: rgb(246 255 245 / 0.08); position: relative; }
+	.bar i {
+		position: absolute; inset: 0 auto 0 0;
+		background: rgb(246 255 245 / 0.45);
+		transition: width 0.5s var(--o-ease);
+	}
+	.row.lead .bar i { background: var(--o-accent); box-shadow: 0 0 10px rgb(255 138 60 / 0.6); }
+	.pips { grid-column: 2 / 4; display: flex; gap: 3px; }
+	.pips span {
+		width: 14px; height: 6px; border-radius: 1px;
+		background: rgb(246 131 59 / var(--a));
+		outline: 1px solid rgb(246 255 245 / 0.10);
+	}
+	.detail {
+		padding: 0 4px 14px 48px;
+		font-size: 12px;
+		color: var(--o-muted);
+		display: grid;
+		gap: 4px;
+		animation: rise 0.2s ease-out both;
+	}
+	.detail dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; }
+	.detail dt { color: var(--o-muted); }
+	.detail dd { margin: 0; color: var(--o-fg); }
+	.detail a { color: var(--o-accent); }
+	.flip {
+		margin: 14px 0 12px;
+		font: italic 300 16px/1.4 var(--o-display);
+		text-wrap: pretty;
+	}
+	.btn {
+		font: 11px var(--o-mono);
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--o-fg);
+		background: none;
+		border: 1px solid var(--o-line);
+		border-radius: 999px;
+		padding: 6px 12px;
+		cursor: pointer;
+	}
+	.btn:disabled { color: var(--o-muted); cursor: default; }
+	.btn:active:not(:disabled) { transform: scale(0.97); }
+	.btn:focus-visible { outline: 2px solid var(--o-accent); outline-offset: 2px; }
+
+	/* Inclusions */
+	.incl {
+		display: grid;
+		grid-template-columns: minmax(84px, 1.4fr) repeat(7, minmax(26px, 1fr));
+		font-size: 12px;
+	}
+	.incl > div {
+		padding: 7px 4px;
+		border-bottom: 1px dotted rgb(246 255 245 / 0.18);
+		min-width: 0;
+	}
+	.incl .h {
+		font: 10px/14px var(--o-mono);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--o-muted);
+		text-align: center;
+		border-bottom: 1px solid var(--o-line);
+	}
+	.incl .h:first-child { text-align: left; }
+	.incl .h .short { display: none; }
+	.incl .c { text-align: center; }
+	.g { font-family: var(--o-mono); }
+	.g.y { color: var(--o-accent); }
+	.g.n { color: #d9776b; }
+	.g.q { color: var(--o-muted); }
+	.key { font-size: 11px; color: var(--o-muted); margin: 10px 0 0; display: flex; gap: 6px 14px; flex-wrap: wrap; }
+
+	.rites ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 40em; }
+	.rites li { display: grid; grid-template-columns: 34px 1fr; text-wrap: pretty; }
+	.rites li .num { color: var(--o-accent); font-size: 12px; padding-top: 2px; }
+	.foot { margin: 24px 0 0; font-size: 11px; line-height: 1.6; color: var(--o-muted); max-width: 60em; }
+
+	@media (max-width: 620px) {
+		#oracle { padding-top: 28px; }
+		.rails i:nth-child(n + 2):nth-child(-n + 5) { display: none; }
+		.cards { grid-template-columns: minmax(0, 1fr); }
+		.ledger-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+		.weights { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+		.w p { display: none; }
+		.incl .h { letter-spacing: 0.02em; }
+		.incl .h .long { display: none; }
+		.incl .h .short { display: inline; }
+		#orrery text.name { font-size: 22px; }
+		#orrery text.sub { display: none; }
+		.block { margin-bottom: 44px; padding-left: 16px; }
+		.detail { padding-left: 16px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		*, *::before, *::after { animation: none !important; transition: none !important; }
+	}
+</style>
+
+<script>
+	{
+		const peso = (v) => '₱' + Math.round(v).toLocaleString('en-US')
+		const k = (v) => '₱' + (v / 1000).toFixed(v % 1000 ? 1 : 0) + 'K'
+		const NIGHT_KW = 0.82
+		const hours = (kwh) => (kwh ? (kwh * 0.9) / NIGHT_KW : null)
+
+		const vendors = [
+			{ name: 'VRAY', where: 'Porac, Pampanga', price: 160000, kwp: 3.15, inv: 3, invName: 'SRNE 3 kW hybrid', batt: 4.8, battName: '24 V × 200 Ah', warranty: '1 yr workmanship', war: 2, pay: 'Not published', payS: 2, cert: 1, certNote: 'Facebook ad from Oct 22, not a quote for you', incl: 'y?yy???', omen: 'The only package inside your budget, but it is an ad, not a quote.' },
+			{ name: 'EAZY Solar', where: 'Messenger', price: 199000, kwp: 3.6, inv: 6, invName: 'Solax 6 kW hybrid', batt: 5.12, battName: '51.2 V × 100 Ah', warranty: '10 yr', war: 5, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Photo quote sent Nov 6', incl: '??yyy??', omen: 'The most hardware for the money. A 6 kW inverter carries aircon, kettle and air fryer at once.' },
+			{ name: 'MPD', where: 'Messenger', price: 230000, kwp: 3, inv: 3, invName: '3 kW hybrid', batt: null, battName: '100 Ah, voltage not given', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 5, certNote: 'Quoted Nov 6, 8:16 AM', incl: '???????', omen: 'Battery size is a mystery. Their ₱145K grid-tied is the cheaper path.' },
+			{ name: 'Northlight', where: 'Messenger', price: 239999, kwp: 3.78, inv: null, invName: 'Inverter not given', batt: 5.1, battName: '5.1 kWh', warranty: 'Not given', war: 2, pay: 'Cash only', payS: 1, cert: 5, certNote: 'Said ₱240K is their floor, Nov 6', incl: '???????', omen: 'Refused your ₱170K counter and wants cash.' },
+			{ name: 'IAN Smart Energy', where: 'Pampanga branch', price: 257600, priceNote: '₱230K + 12% VAT', kwp: 3, inv: null, invName: 'Inverter not given', batt: 4.8, battName: 'Pylontech 100 Ah', warranty: '12 yr panels, 10 yr inverter and battery', war: 5, pay: '₱9,839 × 36 months', payS: 5, cert: 3, certNote: 'Sep 1 quote, VAT excluded', incl: '?n????n', omen: 'The only real installment plan, but it totals ₱354K and the branch skips net metering.', link: null },
+			{ name: 'AVASS', where: 'Messenger', price: 289000, kwp: 6.2, inv: null, invName: 'Inverter not given', batt: 16, battName: '16 kWh', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 2, certNote: 'Quoted by their AI sales agent', incl: 'yy?????', omen: null, link: null },
+			{ name: 'Luminar', where: 'Messenger', price: 306400, kwp: 3, inv: 3, invName: '3 kW Lite', batt: null, battName: 'Battery not given', warranty: 'Not given', war: 2, pay: 'Not stated', payS: 2, cert: 3, certNote: 'September quote', incl: '?y????y', omen: 'The tidiest paperwork, with VAT and a ₱60K net-metering allowance inside.', link: null },
+			{ name: 'Manuyag', where: 'Messenger', price: 380000, kwp: 6.25, inv: 6, invName: 'Solis or Lumentree 6 kW', batt: 16.9, battName: 'Dongjin 16.9 kWh', warranty: '15, 8, 6 and 5 yr', war: 4, pay: 'Cash or straight card', payS: 3, cert: 4, certNote: 'Quoted Nov 6', incl: '???????', omen: 'Aircon until dawn, at more than double your budget.' },
+		]
+		// AVASS omen is computed against EAZY so the numbers stay true to the data.
+		{
+			const a = vendors[5], e = vendors[1]
+			a.omen = `${(a.batt / e.batt).toFixed(1)}× EAZY's battery for ${k(a.price - e.price)} more. Awaiting confirmation.`
+		}
+		const inclCols = [['Install', 'Inst'], ['VAT', 'VAT'], ['Mount', 'Mnt'], ['Protect', 'Prot'], ['Monitor', 'Mon'], ['Dec slot', 'Dec'], ['Net meter', 'Net']]
+		// incl string order: install, VAT, mounting, protection, monitoring, December slot, net metering
+		vendors.forEach((v) => {
+			v.incl = v.incl.split('')
+			// VRAY and EAZY list their protection and mounting; nobody has confirmed a December slot.
+		})
+
+		const state = { budget: 170000, weights: null, open: null }
+		const criteria = [
+			{ key: 'price', name: 'Fits the budget', why: 'Full marks inside your offering, −1 per ₱25K over', w: 5,
+				score: (v) => (v.price <= state.budget ? 5 : Math.max(0, 5 - Math.ceil((v.price - state.budget) / 25000))) },
+			{ key: 'batt', name: 'Aircon after sunset', why: 'Hours of aircon and fridges on battery', w: 4,
+				score: (v) => { const h = hours(v.batt); return h == null ? 2 : h >= 15 ? 5 : h >= 8 ? 4 : h >= 5 ? 3 : 2 } },
+			{ key: 'inv', name: 'Inverter headroom', why: 'Aircon, kettle and air fryer peak near 3.7 kW', w: 3,
+				score: (v) => (v.inv == null ? 2 : v.inv >= 6 ? 5 : v.inv >= 4 ? 4 : 3) },
+			{ key: 'incl', name: 'Inclusions confirmed', why: 'Install, VAT, mounting, protection, monitoring, net metering', w: 3,
+				score: (v) => 1 + Math.round((4 * v.incl.filter((x, i) => x === 'y' && i !== 5).length) / 6) },
+			{ key: 'pay', name: 'Installment or card', why: 'You want to pay over time', w: 3, score: (v) => v.payS },
+			{ key: 'war', name: 'Warranty', why: '10 years on equipment scores full', w: 2, score: (v) => v.war },
+			{ key: 'cert', name: 'Quote is real', why: 'A written quote to you beats an ad', w: 2, score: (v) => v.cert },
+		]
+		const defaults = criteria.map((c) => c.w)
+		state.weights = [...defaults]
+
+		const totals = (weights = state.weights) => {
+			const sum = weights.reduce((a, b) => a + b, 0) || 1
+			return vendors.map((v) => Math.round((criteria.reduce((t, c, i) => t + c.score(v) * weights[i], 0) / (sum * 5)) * 100))
+		}
+		const ranking = (t) => vendors.map((v, i) => ({ v, i, s: t[i] })).sort((a, b) => b.s - a.s || a.v.price - b.v.price)
+
+		function flip() {
+			const t = totals()
+			const cur = ranking(t)[0].i
+			let best = null
+			criteria.forEach((c, i) => {
+				for (let w = 0; w <= 5; w++) {
+					if (w === state.weights[i]) continue
+					const r = ranking(totals(state.weights.map((x, j) => (j === i ? w : x))))
+					if (r[0].i !== cur && r[0].s > r[1].s) {
+						const cost = Math.abs(w - state.weights[i])
+						if (!best || cost < best.cost) best = { cost, i, w, win: r[0].i }
+					}
+				}
+			})
+			return best
+		}
+
+		// Decode reveal, after the Amp marketing LowerThirdDecode.
+		const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+		let decodeTimer
+		function decode(el, html) {
+			clearInterval(decodeTimer)
+			const tmp = document.createElement('div')
+			tmp.innerHTML = html
+			const plain = tmp.textContent
+			if (reduce || el.dataset.plain === plain) { el.innerHTML = html; el.dataset.plain = plain; return }
+			el.dataset.plain = plain
+			const glyphs = '!@#$%^&*'
+			let n = 0
+			decodeTimer = setInterval(() => {
+				n += 2
+				if (n >= plain.length) { clearInterval(decodeTimer); el.innerHTML = html; return }
+				el.textContent = plain.slice(0, n) + plain.slice(n).replace(/\S/g, () => glyphs[(Math.random() * 8) | 0])
+			}, 22)
+		}
+
+		const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
+		const arcana = [['The Sun', 'what the stars favor'], ['The Star', 'the close second'], ['The Moon', 'the hidden option']]
+
+		// Orrery geometry
+		const svg = document.getElementById('orrery')
+		const SX = 30, SY = 165, P0 = 140000, P1 = 400000, R0 = 46, R1 = 600
+		const rOf = (p) => R0 + ((p - P0) / (P1 - P0)) * (R1 - R0)
+		const ySlots = [-92, 62, -40, 112, 10, -112, 70, -28]
+		const NS = 'http://www.w3.org/2000/svg'
+		const el = (tag, attrs, parent = svg) => {
+			const n = document.createElementNS(NS, tag)
+			for (const a in attrs) n.setAttribute(a, attrs[a])
+			parent.appendChild(n)
+			return n
+		}
+		el('defs', {}).innerHTML = `
+			<radialGradient id="sun"><stop offset="0" stop-color="#fff3d6"/><stop offset=".35" stop-color="#ffb070"/><stop offset=".7" stop-color="#f6833b" stop-opacity=".35"/><stop offset="1" stop-color="#f6833b" stop-opacity="0"/></radialGradient>
+			<radialGradient id="glow"><stop offset="0" stop-color="#ff8a3c" stop-opacity=".55"/><stop offset="1" stop-color="#ff8a3c" stop-opacity="0"/></radialGradient>
+			<clipPath id="clip"><rect x="0" y="0" width="640" height="330"/></clipPath>`
+		const world = el('g', { 'clip-path': 'url(#clip)' })
+		const budgetRing = el('circle', { class: 'budget-ring', cx: SX, cy: SY, r: rOf(state.budget) }, world)
+		;[150000, 200000, 250000, 300000, 350000].forEach((p) => {
+			el('circle', { class: 'orbit', cx: SX, cy: SY, r: rOf(p) }, world)
+			const t = el('text', { x: SX + rOf(p) + 4, y: 322, 'font-size': 10, opacity: 0.5 }, world)
+			t.textContent = k(p)
+		})
+		el('circle', { cx: SX, cy: SY, r: 70, fill: 'url(#sun)' }, world)
+		// Orb symbol: a circle with ellipses inside.
+		const orb = el('g', { stroke: '#091c1e', 'stroke-width': 1, fill: 'none', opacity: 0.55 }, world)
+		el('circle', { cx: SX, cy: SY, r: 14 }, orb)
+		el('ellipse', { cx: SX, cy: SY, rx: 14, ry: 5 }, orb)
+		el('ellipse', { cx: SX, cy: SY, rx: 5, ry: 14 }, orb)
+		const budgetLabel = el('text', { y: 18, 'font-size': 11, fill: '#f6833b' }, world)
+		budgetLabel.style.fill = '#f6833b'
+
+		const planets = vendors.map((v, i) => {
+			const r = rOf(v.price)
+			const y = SY + ySlots[i]
+			const x = SX + Math.sqrt(Math.max(0, r * r - ySlots[i] ** 2))
+			const size = v.batt ? 4 + v.batt * 0.75 : 6
+			const g = el('g', { class: 'planet', tabindex: 0, role: 'button', 'aria-label': `${v.name}, ${peso(v.price)}` })
+			const glow = el('circle', { cx: x, cy: y, r: size * 3.2, fill: 'url(#glow)' }, g)
+			const body = el('circle', { class: 'body', cx: x, cy: y, r: size, 'stroke-width': 1, 'stroke-dasharray': v.batt ? '' : '2 3' }, g)
+			const flipL = x > 500
+			const tx = flipL ? x - size - 7 : x + size + 7
+			const anchor = flipL ? 'end' : 'start'
+			const t1 = el('text', { class: 'name', x: tx, y: y - 2, 'font-size': 13, 'text-anchor': anchor }, g)
+			t1.textContent = v.name
+			const t2 = el('text', { class: 'sub', x: tx, y: y + 13, 'font-size': 11, opacity: 0.6, 'text-anchor': anchor }, g)
+			t2.textContent = `${k(v.price)}  ${v.batt ? v.batt + ' kWh' : '? kWh'}`
+			const open = () => { state.open = i; render(); document.querySelector(`[data-row="${i}"] button`)?.focus({ preventScroll: true }) }
+			g.addEventListener('click', open)
+			g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open() } })
+			return { glow, body, t1 }
+		})
+
+		// Weight sliders
+		const wBox = document.getElementById('weights')
+		wBox.innerHTML = criteria.map((c, i) => `<div class="w">
+			<label for="w${i}">${c.name}<span class="num" id="wv${i}"></span></label>
+			<input id="w${i}" type="range" min="0" max="5" step="1" value="${state.weights[i]}" data-i="${i}">
+			<p>${c.why}</p></div>`).join('')
+		const paint = (input) => input.style.setProperty('--p', ((input.value - input.min) / (input.max - input.min)) * 100 + '%')
+
+		const sigil = (v, lead) => {
+			// A tiny sky: the sun on the left, the vendor's orbit, its planet sized by battery.
+			const r = 18 + ((v.price - P0) / (P1 - P0)) * 150
+			const size = v.batt ? 3 + v.batt * 0.45 : 4
+			const c = lead ? '#f6833b' : '#f6fff5'
+			return `<svg class="sigil" viewBox="0 0 200 64" aria-hidden="true">
+				<circle cx="10" cy="32" r="16" fill="url(#cardsun)"/>
+				<path d="M ${10 + r} 2 A ${r} ${r} 0 0 1 ${10 + r} 62" fill="none" stroke="rgb(246 255 245 / .3)" stroke-dasharray="1 5" stroke-linecap="round"/>
+				<circle cx="${10 + r}" cy="32" r="${size}" fill="${v.batt ? c : 'none'}" stroke="${c}" ${v.batt ? '' : 'stroke-dasharray="2 2"'}/>
+				<defs><radialGradient id="cardsun"><stop offset="0" stop-color="#ffd2a6"/><stop offset=".5" stop-color="#f6833b" stop-opacity=".5"/><stop offset="1" stop-color="#f6833b" stop-opacity="0"/></radialGradient></defs>
+			</svg>`
+		}
+
+		const ledger = document.getElementById('ledger')
+		const cards = document.getElementById('cards')
+		let lastCardKey = ''
+
+		function render() {
+			const t = totals()
+			const rank = ranking(t)
+			const lead = rank[0]
+			const inBudget = vendors.filter((v) => v.price <= state.budget)
+			const cheapest = [...vendors].sort((a, b) => a.price - b.price)[0]
+
+			// Title and lede, computed from state.
+			let title
+			if (inBudget.length === 0) title = `<em>${lead.v.name}</em> rises, though nothing fits ${k(state.budget)}`
+			else if (inBudget.includes(lead.v)) title = `<em>${lead.v.name}</em> rises, and it fits your ${k(state.budget)}`
+			else title = `<em>${lead.v.name}</em> rises. <em>${inBudget.length === 1 ? inBudget[0].name : inBudget.length + ' offers'}</em> fit${inBudget.length === 1 ? 's' : ''} the budget.`
+			decode(document.getElementById('title'), title)
+			const over = lead.v.price - state.budget
+			document.getElementById('lede').innerHTML =
+				`${lead.v.name} scores <b>${lead.s}</b> of 100 at ${peso(lead.v.price)}` +
+				(over > 0 ? `, <b>${k(over)} over</b> your offering` : ', inside your offering') +
+				`. It leads ${rank[1].v.name} by ${lead.s - rank[1].s}. ` +
+				`Cheapest hybrid is ${cheapest.name} at ${k(cheapest.price)}. Install target: Dec 25 to 31.`
+
+			// Orrery
+			budgetRing.setAttribute('r', rOf(state.budget))
+			budgetLabel.setAttribute('x', Math.min(560, SX + rOf(state.budget) + 6))
+			budgetLabel.textContent = `budget ${k(state.budget)}`
+			vendors.forEach((v, i) => {
+				const p = planets[i]
+				const inside = v.price <= state.budget
+				const isLead = i === lead.i
+				p.glow.style.opacity = inside || isLead ? 1 : 0
+				p.body.setAttribute('fill', v.batt ? (inside || isLead ? '#f6833b' : '#f6fff5') : 'none')
+				p.body.setAttribute('fill-opacity', inside || isLead ? 1 : 0.55)
+				p.body.setAttribute('stroke', inside || isLead ? '#f6833b' : '#f6fff5')
+				p.t1.style.fill = isLead ? '#f6833b' : ''
+			})
+			const bo = document.getElementById('budgetOut')
+			bo.textContent = peso(state.budget)
+			paint(document.getElementById('budget'))
+
+			// Tarot spread, re-dealt only when the top three change.
+			const key = rank.slice(0, 3).map((r) => r.i).join()
+			const deal = key !== lastCardKey
+			lastCardKey = key
+			cards.innerHTML = rank.slice(0, 3).map((r, n) => {
+				const v = r.v, h = hours(v.batt)
+				return `<article class="card ${n === 0 ? 'first' : ''}" style="${deal ? `animation-delay:${n * 80}ms` : 'animation:none'}">
+					<div class="arcana"><span>${roman[n]}</span><span>${arcana[n][0]}</span></div>
+					${sigil(v, n === 0)}
+					<h2>${v.name}</h2>
+					<div class="price">${peso(v.price)}<small>${v.priceNote || (v.price <= state.budget ? 'in budget' : k(v.price - state.budget) + ' over')}</small></div>
+					<ul class="specs">
+						<li><b>${v.kwp} kWp</b> panels, <b>${v.invName}</b></li>
+						<li><b>${v.batt ? v.batt + ' kWh' : '?'}</b> battery${h ? `, about <b>${Math.round(h)} h</b> of aircon after sunset` : ''}</li>
+						<li>${v.pay}. ${v.warranty} warranty.</li>
+					</ul>
+					<p class="omen">${v.omen}</p>
+				</article>`
+			}).join('')
+
+			// Ledger
+			ledger.innerHTML = rank.map((r, n) => {
+				const v = r.v
+				const open = state.open === r.i
+				const pips = criteria.map((c) => { const s = c.score(v); return `<span title="${c.name}: ${s} of 5" style="--a:${[0.02, 0.08, 0.25, 0.45, 0.7, 1][s]}"></span>` }).join('')
+				const inc = (x) => (x === 'y' ? 'yes' : x === 'n' ? 'no' : 'unknown')
+				return `<li class="row ${n === 0 ? 'lead' : ''}" data-row="${r.i}">
+					<button aria-expanded="${open}" data-i="${r.i}">
+						<span class="roman">${roman[n]}</span>
+						<span class="who">${v.name}<span class="pr">${k(v.price)}</span></span>
+						<span class="score">${r.s}</span>
+						<span class="bar"><i style="width:${r.s}%"></i></span>
+						<span class="pips" aria-label="${criteria.map((c) => c.name + ' ' + c.score(v)).join(', ')}">${pips}</span>
+					</button>
+					${open ? `<div class="detail"><dl>
+						<dt>Where</dt><dd>${v.where}</dd>
+						<dt>Panels</dt><dd>${v.kwp} kWp, ${k(v.price / v.kwp)} per kWp</dd>
+						<dt>Battery</dt><dd>${v.battName}${v.batt ? `, ${k(v.price / v.batt)} per kWh` : ''}</dd>
+						<dt>Inverter</dt><dd>${v.invName}</dd>
+						<dt>Payment</dt><dd>${v.pay}</dd>
+						<dt>Source</dt><dd>${v.certNote}</dd>
+						<dt>Install, VAT</dt><dd>${inc(v.incl[0])}, ${inc(v.incl[1])}</dd>
+					</dl></div>` : ''}
+				</li>`
+			}).join('')
+
+			const f = flip()
+			document.getElementById('flip').textContent = f
+				? `${f.w > state.weights[f.i] ? 'Raise' : 'Lower'} “${criteria[f.i].name.toLowerCase()}” from ${state.weights[f.i]} to ${f.w}, and ${vendors[f.win].name} takes the crown.`
+				: 'No single weight change moves the crown.'
+			criteria.forEach((_, i) => { document.getElementById('wv' + i).textContent = state.weights[i] })
+			document.getElementById('reset').disabled = state.weights.every((w, i) => w === defaults[i])
+		}
+
+		// Inclusions grid
+		document.getElementById('incl').innerHTML =
+			[['Seller', 'Seller'], ...inclCols].map(([l, sh]) => `<div class="h"><span class="long">${l}</span><span class="short">${sh}</span></div>`).join('') +
+			[...vendors].sort((a, b) => a.price - b.price).map((v) =>
+				`<div>${v.name}</div>` + v.incl.map((x) => `<div class="c"><span class="g ${x === 'y' ? 'y' : x === 'n' ? 'n' : 'q'}" aria-label="${x === 'y' ? 'confirmed' : x === 'n' ? 'excluded' : 'unknown'}">${x === 'y' ? '✓' : x === 'n' ? '×' : '?'}</span></div>`).join('')
+			).join('')
+
+		wBox.addEventListener('input', (e) => {
+			const i = Number(e.target.dataset.i)
+			state.weights[i] = Number(e.target.value)
+			paint(e.target)
+			render()
+		})
+		document.getElementById('budget').addEventListener('input', (e) => {
+			state.budget = Number(e.target.value)
+			render()
+		})
+		ledger.addEventListener('click', (e) => {
+			const b = e.target.closest('button[data-i]')
+			if (!b) return
+			const i = Number(b.dataset.i)
+			state.open = state.open === i ? null : i
+			render()
+			document.querySelector(`[data-row="${i}"] button`)?.focus()
+		})
+		document.getElementById('reset').addEventListener('click', () => {
+			state.weights = [...defaults]
+			wBox.querySelectorAll('input').forEach((input, i) => { input.value = defaults[i]; paint(input) })
+			render()
+		})
+		wBox.querySelectorAll('input').forEach(paint)
+		render()
+	}
+</script>
+
+</body></html>
