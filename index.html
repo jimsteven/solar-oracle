@@ -11,10 +11,45 @@
 
 	<header class="block hero">
 		<span class="tick"></span>
-		<p class="label">The Pandacaqui solar oracle <span class="dim">/ Read Nov 6, 2026 / 9 hybrid offerings</span></p>
+		<p class="label">The Pandacaqui solar oracle <span class="dim">/ Updated Nov 7, 2026 / 9 ranked offerings + 5 new leads</span></p>
 		<h1 id="title" aria-live="polite"></h1>
 		<p class="lede" id="lede"></p>
 	</header>
+
+	<section class="block" aria-labelledby="ad-watch-title">
+		<span class="tick"></span>
+		<h2 class="label" id="ad-watch-title">Ad watch <span class="dim">/ five screenshot leads, not yet scored</span></h2>
+		<p class="lede">Altriva has supplied a battery-backed package; SOLusyon has clarified its offer is grid-tied. These leads stay outside the ranking until site-specific installed totals and inclusions are confirmed. None is independently vetted.</p>
+		<div class="ad-leads">
+			<details>
+				<summary><strong>HYMC Trading Solar</strong><span class="lead-price num">₱174,000</span><span class="lead-meta">3.7 kW hybrid + battery · closest advertised match</span></summary>
+				<p>Advertises battery backup, free installation in Luzon, BDO card installments and Security Bank financing. Battery kWh, equipment models, VAT, travel fees and December availability remain unknown. Its business page says net metering is extra.</p>
+				<p>Cabanatuan business footprint and an independent quote discussion found, not a completed-install endorsement. Asking for a ₱170K all-in offer, registration and recent Pampanga references.</p>
+			</details>
+			<details>
+				<summary><strong>Altriva Solar</strong><span class="lead-price num">₱165,000</span><span class="lead-meta">Seller package sheet: 3 kW Hoymiles hybrid + 6 kWh lithium · installation included</span></summary>
+				<p>Replied Nov 7 recommending its ₱165K package for the budget: 3 kW Hoymiles hybrid inverter, 6 kWh lithium battery and five AE Solar panels. Lists 10-year inverter/battery warranties and 30-year panel performance warranty. Exact models, panel wattage, workmanship warranty, VAT, Pampanga travel, net metering, payment terms and Dec 25–31 availability remain unconfirmed.</p>
+				<p>The original ₱80K package is different: 1.9 kW system, 3 kW SAKO off-grid hybrid inverter, 2.5 kWh lithium battery and three AE Solar panels. Lists a 1-year inverter warranty and a 3–5-year battery warranty. Both package prices include installation; savings claims still depend on usage and site conditions.</p>
+				<p>Website identifies Mangali Trading Corp. in Las Piñas; contact details match its social page. Facebook has no reviews. Pampanga coverage and independent customer references are unverified.</p>
+			</details>
+			<details>
+				<summary><strong>SOLusyon Solar</strong><span class="lead-price num">₱165,000</span><span class="lead-meta">Current reply: grid-tied, “premium materials” · not a battery-backed offer</span></summary>
+				<p>Screenshot advertised 3 kW Standard at ₱145K with panels, inverter, installation and net metering. Its Nov 7 reply instead states ₱165K grid-tied with premium materials; current equipment and inclusions are not detailed. Asked again for a hybrid WITH battery within ₱170K, or its cheapest battery-backed option.</p>
+				<p>Floridablanca, Pampanga address and six Facebook recommendations found; reviewer authenticity and business registration are not independently verified.</p>
+			</details>
+			<details>
+				<summary><strong>GSN Solar Nationwide</strong><span class="lead-price num">₱139,999</span><span class="lead-meta">6 kW hybrid · explicitly NO BATTERY</span></summary>
+				<p>Advertises three years of check-up visits and calibration every six months. Battery upgrade cost, installation, VAT, travel, net metering, equipment models and service coverage remain unconfirmed.</p>
+				<p>Bulacan business footprint found. An independent commenter alleges poor communication after a quotation; this is unverified, not proof of fraud. Written service commitments and recent customer references are needed.</p>
+			</details>
+			<details>
+				<summary><strong>Prime Tech Philippines</strong><span class="lead-price num">from ₱60,000</span><span class="lead-meta">Grid-tied hardware · no battery listed, installation not promised</span></summary>
+				<p>Advertises 3 / 5 / 6 / 8 / 10 kW grid-tied packages at ₱60K / ₱85K / ₱115K / ₱155K / ₱195K. These are not comparable to installed hybrid-with-battery offers. Asking for a turnkey hybrid quote or an accredited Pampanga installer referral.</p>
+				<p>Las Piñas distributor website identifies PTECH TRADING CORP. and publishes a BIR-registration claim; it has not been checked against government records.</p>
+			</details>
+		</div>
+		<p class="key" id="outreach-status">All five sellers messaged Nov 7, 10:28–10:29 AM Manila · Altriva and SOLusyon replied · complete all-in quotes pending · installation target Dec 25–31.</p>
+	</section>
 
 	<section class="block orrery-wrap">
 		<span class="tick"></span>
@@ -176,6 +211,15 @@
 		text-wrap: pretty;
 	}
 	.lede b { color: var(--o-fg); font-weight: 500; }
+
+	.ad-leads { margin-top: 16px; border-top: 1px solid var(--o-line); }
+	.ad-leads details { border-bottom: 1px solid var(--o-line); }
+	.ad-leads summary { padding: 14px 4px; cursor: pointer; }
+	.ad-leads summary:focus-visible { outline: 2px solid var(--o-accent); outline-offset: -2px; }
+	.ad-leads strong { font-weight: 500; }
+	.lead-price { float: right; color: var(--o-accent); font-size: 12px; margin-left: 12px; }
+	.lead-meta { display: block; color: var(--o-muted); font-size: 12px; margin-top: 4px; }
+	.ad-leads p { color: var(--o-muted); font-size: 12px; margin: 0 4px 14px; max-width: 60em; }
 
 	/* Orrery */
 	#orrery {
@@ -431,6 +475,7 @@
 		.ledger-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 		.weights { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
 		.w p { display: none; }
+		.lead-price { float: none; display: block; margin: 4px 0 0; }
 		.incl .h { letter-spacing: 0.02em; }
 		.incl .h .long { display: none; }
 		.incl .h .short { display: inline; }
